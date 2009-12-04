@@ -30,10 +30,10 @@ public class ShapeColoredAndAlphaedByValueRenderer implements TileRenderer {
 		double lonOrigin = latLonBounds[1];
 		double latExtent = latLonBounds[2] - latLonBounds[0];
 		double lonExtent = latLonBounds[3] - latLonBounds[1];
-		double lx = (256 * (lat - latOrigin)) / latExtent;
-		double ly = (256 * (lon - lonOrigin)) / lonExtent;
-		double width = Math.max(3, LAT_WIDTH/ latExtent);
-		double height = Math.max(3, LON_WIDTH / lonExtent);
+		double ly = 256 - (256 * (lat - latOrigin)) / latExtent;
+		double lx = (256 * (lon - lonOrigin)) / lonExtent;
+		double height = Math.max(3, LAT_WIDTH/ latExtent);
+		double width = Math.max(3, LON_WIDTH / lonExtent);
 		int blue = constrainToValidValues(Double.parseDouble(valuesAtLatLon[0]));
 		int alpha = constrainToValidValues(Double.parseDouble(valuesAtLatLon[1]));
 		Color color = new Color(0, 0, blue, alpha);
