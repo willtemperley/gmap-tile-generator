@@ -27,25 +27,30 @@ public class ImageCache {
 		return bufferedImage;
 	}
 
-	public void saveImage(String key) {
+	public void saveImage(String directory, String key) {
 		BufferedImage image = imageMap.get(key);
-		String filename = "tile" + key + "_" + this.zoom + ".png";
+		File dir = new File(directory);
+		if (!dir.exists()){
+			dir.mkdirs();
+		}
+		String filename = directory + "/tile" + key + "_" + this.zoom + ".png";
 		try {
 			boolean write = ImageIO.write(image, "png", new File(filename));
 			if (!write) {
 				System.err.println("Could not save image: " + filename
 						+ "! It seems a png writer doesn't exist");
-				throw new RuntimeException("Could not save image as png writer doesn't exist?");
+				throw new RuntimeException(
+						"Could not save image as png writer doesn't exist?");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public void saveAllImages(){
+
+	public void saveAllImages(String directory) {
 		for (String key : imageMap.keySet()) {
-			saveImage(key);
+			saveImage(directory, key);
 		}
 	}
 }

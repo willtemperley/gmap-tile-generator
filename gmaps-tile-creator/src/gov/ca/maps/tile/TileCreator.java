@@ -37,8 +37,8 @@ public class TileCreator {
 		}
 	}
 
-	public void saveAll() {
-		cache.saveAllImages();
+	public void saveAll(String directory) {
+		cache.saveAllImages(directory);
 	}
 
 }

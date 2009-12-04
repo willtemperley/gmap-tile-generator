@@ -34,8 +34,8 @@ public class ShapeColoredAndAlphaedByValueRenderer implements TileRenderer {
 		double ly = (256 * (lon - lonOrigin)) / lonExtent;
 		double width = Math.max(3, LAT_WIDTH/ latExtent);
 		double height = Math.max(3, LON_WIDTH / lonExtent);
-		int blue = constrainToValidValues(Double.parseDouble(valuesAtLatLon[0])/25*255);
-		int alpha = constrainToValidValues((Double.parseDouble(valuesAtLatLon[1])-1925)*255/100);
+		int blue = constrainToValidValues(Double.parseDouble(valuesAtLatLon[0]));
+		int alpha = constrainToValidValues(Double.parseDouble(valuesAtLatLon[1]));
 		Color color = new Color(0, 0, blue, alpha);
 		graphics.setColor(color);
 		graphics.fill(new Ellipse2D.Double(lx, ly, width, height));
