@@ -25,6 +25,7 @@ public class LatLonWithValuesToTiles {
 	public void generateForZoom(String directory, int zoomLevel) throws IOException {
 		// FIXME: check for sane min/max zoom levels, existence of file
 		TileCreator tileCreator = new TileCreator(
+				directory,
 				zoomLevel,
 				new TileRenderer[] { new ShapeColoredAndAlphaedByValueRenderer() {
 				} });
@@ -48,6 +49,6 @@ public class LatLonWithValuesToTiles {
 			tileCreator.renderData(lat, lon, values);
 		}
 		reader.close();
-		tileCreator.saveAll(directory);
+		tileCreator.saveAll();
 	}
 }

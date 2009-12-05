@@ -9,10 +9,10 @@ public class TileCreator {
 	private ImageCache cache;
 	private TileRenderer[] renderer;
 	
-	public TileCreator(int zoomLevel, TileRenderer[] renderer){
+	public TileCreator(String directory, int zoomLevel, TileRenderer[] renderer){
 		this.zoomLevel = zoomLevel;
 		mercator = new GlobalMercator();
-		cache = new ImageCache(zoomLevel);
+		cache = new ImageCache(directory, zoomLevel);
 		this.renderer = renderer;
 	}
 	
@@ -37,8 +37,8 @@ public class TileCreator {
 		}
 	}
 
-	public void saveAll(String directory) {
-		cache.saveAllImages(directory);
+	public void saveAll() {
+		cache.saveAllImages();
 	}
 
 }
