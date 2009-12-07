@@ -10,9 +10,9 @@ public class TestLatLonWithValuesToTiles extends TestCase{
 		String userHome = System.getProperty("user.home");
 		String tmpDir = userHome+"/tmp";
 		LatLonWithValuesToTiles tiler = new LatLonWithValuesToTiles(tmpDir+"/sample.csv");
-		for(int i=4; i < 18; i++){
+		for(int i=16; i > 3; i--){
 			System.out.println("Generating zoom level: "+i);
-			tiler.generateForZoom(tmpDir+"/sample-tiles", i);
+			tiler.generateForZoom(tmpDir+"/sample-tiles-colored", i);
 		}
 	}
 }
