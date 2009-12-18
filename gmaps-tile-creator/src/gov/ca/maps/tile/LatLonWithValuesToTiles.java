@@ -1,5 +1,8 @@
 package gov.ca.maps.tile;
 
+import gov.ca.maps.tile.renderer.ShapeColoredAndAlphaedByValueRenderer;
+import gov.ca.maps.tile.renderer.TileRenderer;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

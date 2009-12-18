@@ -5,8 +5,8 @@ import java.awt.Color;
 import junit.framework.TestCase;
 
 import gov.ca.maps.tile.TileCreator;
-import gov.ca.maps.tile.TileRenderer;
-import gov.ca.maps.tile.ValueAsColoredShapeRenderer;
+import gov.ca.maps.tile.renderer.TileRenderer;
+import gov.ca.maps.tile.renderer.ValueAsColoredShapeRenderer;
 
 public class TestTileCreator extends TestCase {
 	public void testSimple() {

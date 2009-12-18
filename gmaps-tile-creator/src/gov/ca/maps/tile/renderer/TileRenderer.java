@@ -1,4 +1,4 @@
-package gov.ca.maps.tile;
+package gov.ca.maps.tile.renderer;
 
 import java.awt.image.BufferedImage;
 

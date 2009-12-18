@@ -1,5 +1,7 @@
 package gov.ca.maps.tile;
 
+import gov.ca.maps.tile.geom.GlobalMercator;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -7,21 +9,38 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+/**
+ * uses a simple image cache that holds buffered images upto a maximum size.
+ * When that size is reached, it clears the buffer to disk Also when an image is
+ * requested it checks the disk and loads the image from the disk into cache
+ * 
+ * @author nsandhu
+ * 
+ */
 public class ImageCache {
-	private HashMap<String, BufferedImage> imageMap;
-	private int zoom;
-	private String directory;
+	private final HashMap<String, BufferedImage> imageMap;
+	private int cacheSize = 1000;
+	private final FilenameMap filenameMap;
 
-	public ImageCache(String directory, int zoom) {
-	this.directory = directory;
-		this.zoom = zoom;
-		imageMap = new HashMap<String, BufferedImage>(1000);
+	/**
+	 * @param directory
+	 *            Uses this to hold the disk cache
+	 * @param zoom
+	 */
+	public ImageCache(FilenameMap filenameMap) {
+		this.filenameMap = filenameMap;
+		imageMap = new HashMap<String, BufferedImage>(cacheSize);
 	}
 
+	/**
+	 * 
+	 * @param tx
+	 * @param ty
+	 * @return
+	 */
 	public BufferedImage getImage(int tx, int ty) {
 		String key = tx + "_" + ty;
-		if (imageMap.size() > 1000){
-			System.out.println("Clearing the image cache");
+		if (imageMap.size() > cacheSize) {
 			saveAllImages();
 		}
 		BufferedImage bufferedImage = imageMap.get(key);
@@ -41,24 +60,24 @@ public class ImageCache {
 		return bufferedImage;
 	}
 
+	/**
+	 * ensures that filename parent directory exists.
+	 */
 	protected void ensureDirectory() {
-		File dir = new File(directory);
+		File dir = new File(filenameMap.getDirectory());
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
 	}
 
 	protected String getFilename(String key) {
-		return directory + "/tile" + key + "_" + this.zoom + ".png";
+		return filenameMap.getFilenameForKey(key);
 	}
 
-	public void saveImage(String directory, String key) {
+	public void saveImage(String key) {
 		BufferedImage image = imageMap.get(key);
-		File dir = new File(directory);
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-		String filename = directory + "/tile" + key + "_" + this.zoom + ".png";
+		ensureDirectory();
+		String filename = getFilename(key);
 		try {
 			boolean write = ImageIO.write(image, "png", new File(filename));
 			if (!write) {
@@ -85,8 +104,20 @@ public class ImageCache {
 
 	public void saveAllImages() {
 		for (String key : imageMap.keySet()) {
-			saveImage(directory, key);
+			saveImage(key);
 		}
 		imageMap.clear();
+	}
+
+	public int getCacheSize() {
+		return cacheSize;
+	}
+
+	public void setCacheSize(int cacheSize) {
+		this.cacheSize = cacheSize;
+	}
+
+	public FilenameMap getFilenameMap() {
+		return filenameMap;
 	}
 }

@@ -1,6 +1,6 @@
 package gov.ca.maps.tile.test;
 
-import gov.ca.maps.tile.GlobalMercator;
+import gov.ca.maps.tile.geom.GlobalMercator;
 import junit.framework.TestCase;
 
 public class TestGlobalMercator extends TestCase{

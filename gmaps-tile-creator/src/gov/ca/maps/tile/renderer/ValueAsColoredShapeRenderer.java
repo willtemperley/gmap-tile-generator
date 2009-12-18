@@ -1,4 +1,5 @@
-package gov.ca.maps.tile;
+package gov.ca.maps.tile.renderer;
+
 
 import java.awt.Color;
 import java.awt.Graphics2D;

@@ -1,4 +1,4 @@
-package gov.ca.maps.tile;
+package gov.ca.maps.tile.geom;
 
 /**
  * TMS Global Mercator Profile ---------------------------
