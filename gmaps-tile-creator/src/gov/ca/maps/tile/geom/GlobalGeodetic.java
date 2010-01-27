@@ -1,3 +1,21 @@
+/**
+ *    Copyright (C) 2009, 2010 
+ *    State of California,
+ *    Department of Water Resources.
+ *    This file is part of DSM2 Grid Map
+ *    The DSM2 Grid Map is free software: 
+ *    you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *    DSM2 Grid Map is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
+ */
 package gov.ca.maps.tile.geom;
 
 /**
@@ -32,10 +50,10 @@ package gov.ca.maps.tile.geom;
  * 
  */
 public class GlobalGeodetic {
-	private int tileSize;
+	private final int tileSize;
 
 	public GlobalGeodetic() {
-		this.tileSize = GlobalMercator.TILE_SIZE;
+		tileSize = GlobalMercator.TILE_SIZE;
 	}
 
 	/**
@@ -57,8 +75,8 @@ public class GlobalGeodetic {
 	 * @return
 	 */
 	public int[] PixelsToTile(int px, int py) {
-		int tx = (int) (Math.ceil(px / ((float) this.tileSize) - 1));
-		int ty = (int) (Math.ceil(py / ((float) this.tileSize) - 1));
+		int tx = (int) (Math.ceil(px / ((float) tileSize) - 1));
+		int ty = (int) (Math.ceil(py / ((float) tileSize) - 1));
 		return new int[] { tx, ty };
 	}
 

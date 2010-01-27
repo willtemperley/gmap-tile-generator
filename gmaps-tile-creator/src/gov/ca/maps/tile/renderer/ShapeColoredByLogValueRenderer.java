@@ -1,3 +1,21 @@
+/**
+ *    Copyright (C) 2009, 2010 
+ *    State of California,
+ *    Department of Water Resources.
+ *    This file is part of DSM2 Grid Map
+ *    The DSM2 Grid Map is free software: 
+ *    you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *    DSM2 Grid Map is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
+ */
 package gov.ca.maps.tile.renderer;
 
 import java.awt.Color;
@@ -15,17 +33,19 @@ public class ShapeColoredByLogValueRenderer implements TileRenderer {
 	public static final double LON_WIDTH = 1000.0 / DEGREE_LON_IN_FEET;
 	private final HashMap<Object, Object> hints;
 	// value and colors in ascending order
-	private double[] value1ColorBoundaries;
-	private final Color[] value1Colors = new Color[] { Color.black, Color.blue,
-			Color.cyan, Color.green, Color.yellow, Color.orange, Color.red,
-			Color.magenta, Color.pink, Color.white };
+	private final double[] value1ColorBoundaries;
+	private final Color[] value1Colors = new Color[] { Color.black,
+			Color.darkGray, Color.blue, Color.cyan, Color.green, Color.yellow,
+			Color.orange, Color.red, Color.magenta, Color.pink,
+			Color.lightGray, Color.white };
 
 	public ShapeColoredByLogValueRenderer() {
 		int nColors = value1Colors.length;
 		value1ColorBoundaries = new double[nColors];
-		for (int i = 0; i < nColors; i++) {
-			value1ColorBoundaries[i] = -1 * Math.pow(5, nColors - i - 1);
+		for (int i = 0; i < nColors - 1; i++) {
+			value1ColorBoundaries[i] = -1 * Math.pow(3, nColors - i - 2);
 		}
+		value1ColorBoundaries[nColors - 1] = 0;
 		hints = new HashMap<Object, Object>();
 		hints.put(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);

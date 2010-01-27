@@ -1,3 +1,21 @@
+/**
+ *    Copyright (C) 2009, 2010 
+ *    State of California,
+ *    Department of Water Resources.
+ *    This file is part of DSM2 Grid Map
+ *    The DSM2 Grid Map is free software: 
+ *    you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *    DSM2 Grid Map is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details. [http://www.gnu.org/licenses]
+ *    
+ *    @author Nicky Sandhu
+ *    
+ */
 package gov.ca.maps.tile.geom;
 
 /**
@@ -88,199 +106,221 @@ package gov.ca.maps.tile.geom;
  * 
  */
 public class GlobalMercator {
-	public static final int TILE_SIZE=256;
-	private int tileSize;
-	private double initialResolution;
-	private double originShift;
-	public GlobalMercator(){
+	public static final int TILE_SIZE = 256;
+	private final int tileSize;
+	private final double initialResolution;
+	private final double originShift;
+
+	public GlobalMercator() {
 		tileSize = TILE_SIZE;
-		initialResolution = 2*Math.PI*6378137/tileSize;
+		initialResolution = 2 * Math.PI * 6378137 / tileSize;
 		// 156543.03392804062 for tileSize 256 pixels
-	    originShift = 2 * Math.PI * 6378137 / 2.0;
-	    //20037508.342789244
+		originShift = 2 * Math.PI * 6378137 / 2.0;
+		// 20037508.342789244
 	}
-	
+
 	/**
-	 * Converts given lat/lon in WGS84 Datum to XY in Spherical Mercator EPSG:900913
+	 * Converts given lat/lon in WGS84 Datum to XY in Spherical Mercator
+	 * EPSG:900913
+	 * 
 	 * @param lat
 	 * @param lon
 	 * @return
 	 */
-    public double[] LatLonToMeters(double lat, double lon ){
+	public double[] LatLonToMeters(double lat, double lon) {
 
-        double mx = lon * this.originShift / 180.0;
-        double my = Math.log( Math.tan((90 + lat) * Math.PI / 360.0 )) / (Math.PI / 180.0);
-        my = my * this.originShift / 180.0;
-        return new double[]{mx, my};
-    }
-    /**
-     * Converts XY point from Spherical Mercator EPSG:900913 to lat/lon in WGS84 Datum
-     * @return
-     */
-    public double[] MetersToLatLon(double mx, double my ){
+		double mx = lon * originShift / 180.0;
+		double my = Math.log(Math.tan((90 + lat) * Math.PI / 360.0))
+				/ (Math.PI / 180.0);
+		my = my * originShift / 180.0;
+		return new double[] { mx, my };
+	}
 
-        double lon = (mx / this.originShift) * 180.0;
-        double lat = (my / this.originShift) * 180.0;
+	/**
+	 * Converts XY point from Spherical Mercator EPSG:900913 to lat/lon in WGS84
+	 * Datum
+	 * 
+	 * @return
+	 */
+	public double[] MetersToLatLon(double mx, double my) {
 
-        lat = 180 / Math.PI * (2 * Math.atan( Math.exp( lat * Math.PI / 180.0)) - Math.PI / 2.0);
-        return new double[]{lat, lon};
-    }
+		double lon = (mx / originShift) * 180.0;
+		double lat = (my / originShift) * 180.0;
 
-    /**
-     * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
-     * @return
-     */
-    public double[] PixelsToMeters(double px, double py, int zoom){
-        double res = this.Resolution( zoom );
-        double mx = px * res - this.originShift;
-        double my = py * res - this.originShift;
-        return new double[]{mx, my};
-    }
+		lat = 180
+				/ Math.PI
+				* (2 * Math.atan(Math.exp(lat * Math.PI / 180.0)) - Math.PI / 2.0);
+		return new double[] { lat, lon };
+	}
 
-    /**
-     * Converts EPSG:900913 to pyramid pixel coordinates in given zoom level
-     * @param mx
-     * @param my
-     * @param zoom
-     * @return
-     */
-    public int[] MetersToPixels(double mx, double my, int zoom){
-        double res = this.Resolution( zoom );
-        int px = (int) Math.round((mx + this.originShift) / res);
-        int py = (int) Math.round((my + this.originShift) / res);
-        return new int[] {px, py};
-    }
-    
-    /**
-     * Returns a tile covering region in given pixel coordinates
-     * @param px
-     * @param py
-     * @return
-     */
-    public int[] PixelsToTile(int px, int py){
-        int tx = (int) Math.ceil(px/ ((double)this.tileSize)-1);
-        int ty = (int) Math.ceil(py/((double)this.tileSize)-1);
-        return new int[]{tx, ty};
-    }
+	/**
+	 * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
+	 * 
+	 * @return
+	 */
+	public double[] PixelsToMeters(double px, double py, int zoom) {
+		double res = Resolution(zoom);
+		double mx = px * res - originShift;
+		double my = py * res - originShift;
+		return new double[] { mx, my };
+	}
 
-    /**
-     * Move the origin of pixel coordinates to top-left corner
-     * @param px
-     * @param py
-     * @param zoom
-     * @return
-     */
-    public int[] PixelsToRaster(int px, int py, int zoom){        
-        int mapSize = this.tileSize << zoom;
-        return new int[]{px, mapSize - py};
-    }
-    
-    /**
-     * Returns tile for given mercator coordinates
-     * @return
-     */
-    public int[] MetersToTile(double mx, double my, int zoom){
-        int [] p = this.MetersToPixels( mx, my, zoom);
-        return this.PixelsToTile( p[0], p[1]);
-    }
-    
-    /**
-     * Returns bounds of the given tile in EPSG:900913 coordinates
-     * @param tx
-     * @param ty
-     * @param zoom
-     * @return
-     */
-    public double[] TileBounds(int tx, int ty, int zoom){
-        double[] min = this.PixelsToMeters( tx*this.tileSize, ty*this.tileSize, zoom );
-        double minx = min[0], miny=min[1];
-        double[] max = this.PixelsToMeters( (tx+1)*this.tileSize, (ty+1)*this.tileSize, zoom );
-        double maxx = max[0], maxy = max[1];
-        return new double[]{ minx, miny, maxx, maxy };
-    }
+	/**
+	 * Converts EPSG:900913 to pyramid pixel coordinates in given zoom level
+	 * 
+	 * @param mx
+	 * @param my
+	 * @param zoom
+	 * @return
+	 */
+	public int[] MetersToPixels(double mx, double my, int zoom) {
+		double res = Resolution(zoom);
+		int px = (int) Math.round((mx + originShift) / res);
+		int py = (int) Math.round((my + originShift) / res);
+		return new int[] { px, py };
+	}
 
-    /**
-     * Returns bounds of the given tile in latitude/longitude using WGS84 datum
-     * 
-     */
-    public double[] TileLatLonBounds(int tx, int ty, int zoom ){
-        double [] bounds = this.TileBounds( tx, ty, zoom);
-        double[] mins = this.MetersToLatLon(bounds[0], bounds[1]);
-        double[] maxs = this.MetersToLatLon(bounds[2], bounds[3]);
-        return new double[] { mins[0], mins[1], maxs[0], maxs[1] };
-    }
-    
-    /**
-     * Resolution (meters/pixel) for given zoom level (measured at Equator)
-     * 
-     * @return
-     */
-   public double Resolution(int zoom){
-        // return (2 * Math.PI * 6378137) / (this.tileSize * 2**zoom)
-        return this.initialResolution / Math.pow(2, zoom);
-   }
-   /**
-    * Maximal scaledown zoom of the pyramid closest to the pixelSize
-    * @param pixelSize
-    * @return
-    */
-   public int ZoomForPixelSize(int pixelSize ){
-	   for(int i=0; i < 30; i++){
-            if (pixelSize > this.Resolution(i)){
-            	if (i != 0){
-            		return i-1;
-            	} else {
-              return 0; //We don't want to scale up
-            	}
-            }
-	   }
- 	   return 0;
-   }
+	/**
+	 * Returns a tile covering region in given pixel coordinates
+	 * 
+	 * @param px
+	 * @param py
+	 * @return
+	 */
+	public int[] PixelsToTile(int px, int py) {
+		int tx = (int) Math.ceil(px / ((double) tileSize) - 1);
+		int ty = (int) Math.ceil(py / ((double) tileSize) - 1);
+		return new int[] { tx, ty };
+	}
 
-   /**
-    * Converts TMS tile coordinates to Google Tile coordinates
-    * @param tx
-    * @param ty
-    * @param zoom
-    * @return
-    */
-   public int[] GoogleTile(int tx, int ty, int zoom){
-        // coordinate origin is moved from bottom-left to top-left corner of the extent
-        return new int[] { tx, (int) ((Math.pow(2,zoom) - 1) - ty)};
-   }
-   
-   /**
-    * Converts a lat long coordinates to Google Tile Coordinates
-    * @param lat
-    * @param lon
-    * @param zoom
-    * @return
-    */
-   public int[] GoogleTile(double lat, double lon, int zoom){
-		double[] meters = this.LatLonToMeters(lat, lon);
-		int[] tile = this.MetersToTile(meters[0], meters[1], zoom);
+	/**
+	 * Move the origin of pixel coordinates to top-left corner
+	 * 
+	 * @param px
+	 * @param py
+	 * @param zoom
+	 * @return
+	 */
+	public int[] PixelsToRaster(int px, int py, int zoom) {
+		int mapSize = tileSize << zoom;
+		return new int[] { px, mapSize - py };
+	}
+
+	/**
+	 * Returns tile for given mercator coordinates
+	 * 
+	 * @return
+	 */
+	public int[] MetersToTile(double mx, double my, int zoom) {
+		int[] p = MetersToPixels(mx, my, zoom);
+		return PixelsToTile(p[0], p[1]);
+	}
+
+	/**
+	 * Returns bounds of the given tile in EPSG:900913 coordinates
+	 * 
+	 * @param tx
+	 * @param ty
+	 * @param zoom
+	 * @return
+	 */
+	public double[] TileBounds(int tx, int ty, int zoom) {
+		double[] min = PixelsToMeters(tx * tileSize, ty * tileSize, zoom);
+		double minx = min[0], miny = min[1];
+		double[] max = PixelsToMeters((tx + 1) * tileSize, (ty + 1) * tileSize,
+				zoom);
+		double maxx = max[0], maxy = max[1];
+		return new double[] { minx, miny, maxx, maxy };
+	}
+
+	/**
+	 * Returns bounds of the given tile in latitude/longitude using WGS84 datum
+	 * 
+	 */
+	public double[] TileLatLonBounds(int tx, int ty, int zoom) {
+		double[] bounds = TileBounds(tx, ty, zoom);
+		double[] mins = MetersToLatLon(bounds[0], bounds[1]);
+		double[] maxs = MetersToLatLon(bounds[2], bounds[3]);
+		return new double[] { mins[0], mins[1], maxs[0], maxs[1] };
+	}
+
+	/**
+	 * Resolution (meters/pixel) for given zoom level (measured at Equator)
+	 * 
+	 * @return
+	 */
+	public double Resolution(int zoom) {
+		// return (2 * Math.PI * 6378137) / (this.tileSize * 2**zoom)
+		return initialResolution / Math.pow(2, zoom);
+	}
+
+	/**
+	 * Maximal scaledown zoom of the pyramid closest to the pixelSize
+	 * 
+	 * @param pixelSize
+	 * @return
+	 */
+	public int ZoomForPixelSize(int pixelSize) {
+		for (int i = 0; i < 30; i++) {
+			if (pixelSize > Resolution(i)) {
+				if (i != 0) {
+					return i - 1;
+				} else {
+					return 0; // We don't want to scale up
+				}
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Converts TMS tile coordinates to Google Tile coordinates
+	 * 
+	 * @param tx
+	 * @param ty
+	 * @param zoom
+	 * @return
+	 */
+	public int[] GoogleTile(int tx, int ty, int zoom) {
+		// coordinate origin is moved from bottom-left to top-left corner of the
+		// extent
+		return new int[] { tx, (int) ((Math.pow(2, zoom) - 1) - ty) };
+	}
+
+	/**
+	 * Converts a lat long coordinates to Google Tile Coordinates
+	 * 
+	 * @param lat
+	 * @param lon
+	 * @param zoom
+	 * @return
+	 */
+	public int[] GoogleTile(double lat, double lon, int zoom) {
+		double[] meters = LatLonToMeters(lat, lon);
+		int[] tile = MetersToTile(meters[0], meters[1], zoom);
 		return this.GoogleTile(tile[0], tile[1], zoom);
-   }
-   
-   /**
-    * Converts TMS tile coordinates to Microsoft QuadTree
-    * @return
-    */
-    public String QuadTree(int tx, int ty, int zoom ){
-        String quadKey = "";
-        ty = (int) ((Math.pow(2,zoom) - 1) - ty);
-        for(int i=zoom; i < 0; i--){
-            int digit = 0;
-            int mask = 1 << (i-1);
-            if ((tx & mask) != 0){
-                digit += 1;
-            }
-            if ((ty & mask) != 0){
-                digit += 2;
-            }
-            quadKey += (digit+"");
-        }
-        return quadKey;
-    }
+	}
+
+	/**
+	 * Converts TMS tile coordinates to Microsoft QuadTree
+	 * 
+	 * @return
+	 */
+	public String QuadTree(int tx, int ty, int zoom) {
+		String quadKey = "";
+		ty = (int) ((Math.pow(2, zoom) - 1) - ty);
+		for (int i = zoom; i < 0; i--) {
+			int digit = 0;
+			int mask = 1 << (i - 1);
+			if ((tx & mask) != 0) {
+				digit += 1;
+			}
+			if ((ty & mask) != 0) {
+				digit += 2;
+			}
+			quadKey += (digit + "");
+		}
+		return quadKey;
+	}
 
 }
