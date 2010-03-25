@@ -34,9 +34,12 @@ public class ShapeColoredAndAlphaedByValueRenderer implements TileRenderer {
 	private final HashMap<Object, Object> hints;
 	// value and colors in ascending order
 	private final double[] value1ColorBoundaries = new double[] { -100.0,
-			-40.0, -30.0, -15.0, -10.0, -5.0, 0.0 };
+			-40.0, -30.0, -15.0, -10.0, -5.0, 0.0, 5.0, 10.0, 15.0, 30.0, 40.0,
+			100.0 };
 	private final Color[] value1Colors = new Color[] { Color.black, Color.blue,
-			Color.cyan, Color.green, Color.yellow, Color.orange, Color.red };
+			Color.cyan, Color.green, Color.yellow, Color.orange, Color.red,
+			Color.getHSBColor(139, 69, 19), Color.magenta, Color.pink,
+			Color.gray, Color.lightGray, Color.white };
 	private final double[] value2AlphaBoundaries = new double[] { 1925, 2010 };
 
 	public ShapeColoredAndAlphaedByValueRenderer() {
@@ -68,7 +71,8 @@ public class ShapeColoredAndAlphaedByValueRenderer implements TileRenderer {
 		Color color = new Color(colorForValue1.getRed(), colorForValue1
 				.getGreen(), colorForValue1.getBlue(), alpha);
 		graphics.setColor(color);
-		graphics.fill(new Ellipse2D.Double(lx, ly, width, height));
+		graphics.fill(new Ellipse2D.Double(lx - width / 2, ly - height / 2,
+				width, height));
 	}
 
 	private Color getColorForValue1(double value) {

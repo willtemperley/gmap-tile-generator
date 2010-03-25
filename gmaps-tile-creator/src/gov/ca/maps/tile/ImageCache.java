@@ -37,7 +37,7 @@ import javax.imageio.ImageIO;
  */
 public class ImageCache {
 	private final HashMap<String, BufferedImage> imageMap;
-	private int cacheSize = 1000;
+	private int cacheSize = 100;
 	private final FilenameMap filenameMap;
 
 	/**
