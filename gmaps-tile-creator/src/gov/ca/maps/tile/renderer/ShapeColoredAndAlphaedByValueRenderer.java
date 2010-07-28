@@ -38,7 +38,8 @@ public class ShapeColoredAndAlphaedByValueRenderer implements TileRenderer {
 			100.0 };
 	private final Color[] value1Colors = new Color[] { Color.black, Color.blue,
 			Color.cyan, Color.green, Color.yellow, Color.orange, Color.red,
-			Color.getHSBColor(139, 69, 19), Color.magenta, Color.pink,
+			Color.pink, Color.magenta, new Color(151, 18, 204),
+			// dark violet
 			Color.gray, Color.lightGray, Color.white };
 	private final double[] value2AlphaBoundaries = new double[] { 1925, 2010 };
 
