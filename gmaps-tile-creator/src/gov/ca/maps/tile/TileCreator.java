@@ -84,15 +84,14 @@ public class TileCreator {
 			if (tilePixels[1] == 255) {
 				bty = 1;
 			}
-			// int[] googleTile = mercator.GoogleTile(lat, lon, zoomLevel);
-			int[] googleTile = mercator.MetersToTile(meters[0], meters[1],
-					zoomLevel);
+			int[] googleTile = mercator.GoogleTile(lat, lon, zoomLevel);
 			for (int tx = googleTile[0] - ltx; tx <= googleTile[0] + rtx; tx++) {
 				for (int ty = googleTile[1] - tty; ty <= googleTile[1] + bty; ty++) {
 					BufferedImage imageTile = getImageForTileCoordinates(tx, ty);
-					double[] bounds = mercator.TileLatLonBounds(tx, ty,
+					int[] tms = mercator.TMSTileFromGoogleTile(tx, ty,
 							zoomLevel);
-					double[] bounds2 = getLatLonBounds(lat, lon);
+					double[] bounds = mercator.TileLatLonBounds(tms[0], tms[1],
+							zoomLevel);
 					element.renderData(imageTile, bounds, lat, lon, values);
 				}
 			}

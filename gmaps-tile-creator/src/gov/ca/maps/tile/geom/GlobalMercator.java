@@ -287,6 +287,12 @@ public class GlobalMercator {
 		return new int[] { tx, (int) ((Math.pow(2, zoom) - 1) - ty) };
 	}
 
+	public int[] TMSTileFromGoogleTile(int tx, int ty, int zoom) {
+		// coordinate origin is moved from bottom-left to top-left corner of the
+		// extent
+		return new int[] { tx, (int) ((Math.pow(2, zoom) - 1) - ty) };
+	}
+
 	/**
 	 * Converts a lat long coordinates to Google Tile Coordinates
 	 * 
