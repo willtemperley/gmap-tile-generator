@@ -29,6 +29,9 @@ public class TileCreator {
 	private final GlobalMercator mercator;
 	private final ImageCache cache;
 	private final TileRenderer[] renderer;
+	// width in pixels that overlaps between tiles... used to determine if
+	// this lat/lon needs to be rendered on multiple tiles to avoid gaps
+	private int renderingWidth = 1;
 
 	public TileCreator(String directory, int zoomLevel, TileRenderer[] renderer) {
 		this.zoomLevel = zoomLevel;
@@ -53,10 +56,46 @@ public class TileCreator {
 		return cache.getImage(tx, ty);
 	}
 
+	/**
+	 * Considering the rendering of a point may involve looking at which of the
+	 * 8 surrounding tiles should also be rendered
+	 * 
+	 * @param lat
+	 * @param lon
+	 * @param values
+	 */
 	public void renderData(double lat, double lon, String[] values) {
 		for (TileRenderer element : renderer) {
-			element.renderData(getImageFor(lat, lon),
-					getLatLonBounds(lat, lon), lat, lon, values);
+			double[] meters = mercator.LatLonToMeters(lat, lon);
+			int[] metersToPixels = mercator.MetersToPixels(meters[0],
+					meters[1], zoomLevel);
+			int[] tilePixels = new int[] { metersToPixels[0] % 256,
+					metersToPixels[1] % 256 };
+			int ltx = 0, rtx = 0, tty = 0, bty = 0;
+			if (tilePixels[0] == 0) {
+				ltx = 1;
+			}
+			if (tilePixels[0] == 255) {
+				rtx = 1;
+			}
+			if (tilePixels[1] == 0) {
+				tty = 1;
+			}
+			if (tilePixels[1] == 255) {
+				bty = 1;
+			}
+			// int[] googleTile = mercator.GoogleTile(lat, lon, zoomLevel);
+			int[] googleTile = mercator.MetersToTile(meters[0], meters[1],
+					zoomLevel);
+			for (int tx = googleTile[0] - ltx; tx <= googleTile[0] + rtx; tx++) {
+				for (int ty = googleTile[1] - tty; ty <= googleTile[1] + bty; ty++) {
+					BufferedImage imageTile = getImageForTileCoordinates(tx, ty);
+					double[] bounds = mercator.TileLatLonBounds(tx, ty,
+							zoomLevel);
+					double[] bounds2 = getLatLonBounds(lat, lon);
+					element.renderData(imageTile, bounds, lat, lon, values);
+				}
+			}
 		}
 	}
 
