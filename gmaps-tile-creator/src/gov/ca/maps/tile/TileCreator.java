@@ -31,7 +31,7 @@ public class TileCreator {
 	private final TileRenderer[] renderer;
 	// width in pixels that overlaps between tiles... used to determine if
 	// this lat/lon needs to be rendered on multiple tiles to avoid gaps
-	private int renderingWidth = 1;
+	private int renderingWidth = 10;
 
 	public TileCreator(String directory, int zoomLevel, TileRenderer[] renderer) {
 		this.zoomLevel = zoomLevel;
@@ -72,17 +72,17 @@ public class TileCreator {
 			int[] tilePixels = new int[] { metersToPixels[0] % 256,
 					metersToPixels[1] % 256 };
 			int ltx = 0, rtx = 0, tty = 0, bty = 0;
-			if (tilePixels[0] == 0) {
+			if (tilePixels[0] <= renderingWidth) {
 				ltx = 1;
 			}
-			if (tilePixels[0] == 255) {
+			if (tilePixels[0] >= 255 - renderingWidth) {
 				rtx = 1;
 			}
-			if (tilePixels[1] == 0) {
-				tty = 1;
-			}
-			if (tilePixels[1] == 255) {
+			if (tilePixels[1] <= renderingWidth) {
 				bty = 1;
+			}
+			if (tilePixels[1] >= 255 - renderingWidth) {
+				tty = 1;
 			}
 			int[] googleTile = mercator.GoogleTile(lat, lon, zoomLevel);
 			for (int tx = googleTile[0] - ltx; tx <= googleTile[0] + rtx; tx++) {
@@ -96,6 +96,14 @@ public class TileCreator {
 				}
 			}
 		}
+	}
+
+	public int getRenderingWidth() {
+		return renderingWidth;
+	}
+
+	public void setRenderingWidth(int renderingWidth) {
+		this.renderingWidth = renderingWidth;
 	}
 
 	public void saveAll() {
