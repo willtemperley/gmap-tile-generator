@@ -7,8 +7,11 @@ import junit.framework.TestCase;
 import gov.ca.maps.tile.TileCreator;
 import gov.ca.maps.tile.renderer.TileRenderer;
 import gov.ca.maps.tile.renderer.ValueAsColoredShapeRenderer;
+import org.junit.Test;
 
-public class TestTileCreator extends TestCase {
+public class TestTileCreator  {
+
+	@Test
 	public void testSimple() {
 		String userHome = System.getProperty("user.home");
 		String tmpDir = userHome + "/test/tmp";

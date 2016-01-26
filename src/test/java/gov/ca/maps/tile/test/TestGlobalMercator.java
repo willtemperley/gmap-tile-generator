@@ -2,9 +2,13 @@ package gov.ca.maps.tile.test;
 
 import gov.ca.maps.tile.geom.GlobalMercator;
 import junit.framework.TestCase;
+import org.junit.Test;
 
-public class TestGlobalMercator extends TestCase{
-	
+import static org.junit.Assert.*;
+
+public class TestGlobalMercator {
+
+	@Test
 	public void testPixelExtents(){
 		GlobalMercator mercator = new GlobalMercator();
 		double [] meters = mercator.LatLonToMeters(-85, -180);
@@ -16,7 +20,8 @@ public class TestGlobalMercator extends TestCase{
 		assertEquals(256, pixels[0]);
 		assertEquals(256, pixels[1]);
 	}
-	
+
+	@Test
 	public void testTMSToGoogleCoordinates(){
 		GlobalMercator mercator = new GlobalMercator();
 		int[] googleTile = mercator.GoogleTile(0, 0, 0);
